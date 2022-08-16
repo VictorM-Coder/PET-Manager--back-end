@@ -2,6 +2,9 @@ package br.com.leadfortaleza.code.model.animals;
 
 import br.com.leadfortaleza.code.model.enums.AnimalClass;
 import br.com.leadfortaleza.code.model.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -12,18 +15,16 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "animals")
 public class Animal {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
+    @JsonSerialize
     private Long id;
 
     @Column
     @NotBlank(message = "name cannot be blank")
     private String name;
-
-    @Column
-    @NotBlank(message = "registration code cannot be blank")
-    private String registerCode;
 
     @Column
     @NotBlank(message = "breed cannot be blank")
@@ -36,22 +37,22 @@ public class Animal {
 
     @Column
     @NotNull(message = "birthday date cannot be null")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthday;
 
 
     @Column
     private boolean vaccinated;
 
+    @JsonIgnore
     @Column
-    private boolean valid;
+    private boolean valid = true;
 
     @Column
-    @NotBlank(message = "Gender cannot be blank")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column
-    @NotBlank(message = "Animal class cannot be blank")
     @Enumerated(EnumType.STRING)
     private AnimalClass animalClass;
 
@@ -59,25 +60,11 @@ public class Animal {
 
     }
 
-    public Animal(String name, String registerCode, String breed, double weight, String imgLink, LocalDate birthday, boolean vaccinated, boolean valid, Gender gender, AnimalClass animalClass) {
-        this.name = name;
-        this.registerCode = registerCode;
-        this.breed = breed;
-        this.weight = weight;
-        this.imgLink = imgLink;
-        this.birthday = birthday;
-        this.vaccinated = vaccinated;
-        this.valid = valid;
-        this.gender = gender;
-        this.animalClass = animalClass;
-    }
-
     @Override
     public String toString() {
         return "Animal{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", registerCode='" + registerCode + '\'' +
                 ", breed='" + breed + '\'' +
                 ", weight=" + weight +
                 ", imgLink='" + imgLink + '\'' +
@@ -89,16 +76,16 @@ public class Animal {
                 '}';
     }
 
+    public void setInvalid(){
+        this.valid = false;
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public String getRegisterCode() {
-        return registerCode;
     }
 
     public String getBreed() {
