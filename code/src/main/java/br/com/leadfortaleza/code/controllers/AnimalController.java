@@ -2,6 +2,7 @@ package br.com.leadfortaleza.code.controllers;
 
 import br.com.leadfortaleza.code.model.animals.Animal;
 import br.com.leadfortaleza.code.model.animals.AnimalRepository;
+import br.com.leadfortaleza.code.model.enums.AnimalClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,17 @@ public class AnimalController {
     public @ResponseBody
     Optional<Animal> get(@PathVariable Long id){
         return this.animalRepository.findById(id);
+    }
+
+    @GetMapping(path = "/animalClass/{animalClass}")
+    public @ResponseBody
+    Iterable<Animal> getByAnimalClass(@PathVariable String animalClass){
+        try{
+            AnimalClass value = (AnimalClass.valueOf(animalClass.toUpperCase()));
+            return this.animalRepository.findAnimalsByAnimalClass(value);
+        }catch (IllegalArgumentException exception){
+            return null;
+        }
     }
 
     @PostMapping
