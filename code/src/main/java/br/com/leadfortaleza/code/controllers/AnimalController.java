@@ -38,6 +38,12 @@ public class AnimalController {
         }
     }
 
+    @GetMapping(path = "/weightInterval")
+    public @ResponseBody
+    Iterable<Animal> getAnimalsByWeightInterval(@RequestParam(name = "start") double start, @RequestParam(name = "end") double end){
+        return this.animalRepository.findAnimalsByWeightIsBetween(start, end);
+    }
+
     @PostMapping
     public @ResponseBody
     Animal post(@Valid @RequestBody Animal animal){
