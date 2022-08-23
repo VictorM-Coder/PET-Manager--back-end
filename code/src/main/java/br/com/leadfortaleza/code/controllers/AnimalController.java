@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/animal")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AnimalController {
     @Autowired
     private AnimalRepository animalRepository;

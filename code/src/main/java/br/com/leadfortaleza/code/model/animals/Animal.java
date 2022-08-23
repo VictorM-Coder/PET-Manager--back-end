@@ -11,6 +11,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "animals")
@@ -33,7 +34,9 @@ public class Animal {
     @Column
     @Min(0)
     private double weight;
-    private String imgLink;
+
+    @Column(name = "image", unique = false, nullable = false, length = 100000)
+    private byte[] image;
 
     @Column
     @NotNull(message = "birthday date cannot be null")
@@ -67,7 +70,7 @@ public class Animal {
                 ", name='" + name + '\'' +
                 ", breed='" + breed + '\'' +
                 ", weight=" + weight +
-                ", imgLink='" + imgLink + '\'' +
+                ", image='" + Arrays.toString(image) + '\'' +
                 ", birthday=" + birthday +
                 ", vaccinated=" + vaccinated +
                 ", valid=" + valid +
@@ -94,10 +97,6 @@ public class Animal {
 
     public double getWeight() {
         return weight;
-    }
-
-    public String getImgLink() {
-        return imgLink;
     }
 
     public LocalDate getBirthday() {
