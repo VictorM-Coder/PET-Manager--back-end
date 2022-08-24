@@ -78,28 +78,27 @@ public class AnimalController {
     @PostMapping
     public @ResponseBody
     Animal post(@Valid @RequestBody Animal animal){
-        System.out.println(animal);
         return this.animalRepository.save(animal);
     }
 
     @PutMapping(path = "/delete/{id}")
     public @ResponseBody
-    Optional<Animal> delete(@PathVariable Long id){
+    Optional<Animal> delete(@PathVariable Long id,@Valid @RequestBody Animal pet){
+
         Optional<Animal> animal = this.animalRepository.findById(id);
         if (animal.isPresent()){
             animal.get().setInvalid();
             this.animalRepository.save(animal.get());
         }
-
         return animal;
     }
 
     @PutMapping(path = "/update")
     public @ResponseBody
-    Optional<Animal> update(@RequestParam("animal") Animal animal){
-        Optional<Animal> animalActual = this.animalRepository.findById(animal.getId());
+    Optional<Animal> update(@Valid @RequestBody Animal pet){
+        Optional<Animal> animalActual = this.animalRepository.findById(pet.getId());
         if (animalActual.isPresent()){
-            this.animalRepository.save(animal);
+            this.animalRepository.save(pet);
         }
         return animalActual;
     }
