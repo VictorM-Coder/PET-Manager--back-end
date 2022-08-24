@@ -6,6 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 public interface AnimalRepository extends PagingAndSortingRepository<Animal, Long> {
     Iterable<Animal> getAnimalsByBreed(@Valid String breed);
@@ -19,4 +20,6 @@ public interface AnimalRepository extends PagingAndSortingRepository<Animal, Lon
 
     @Query("select animal from Animal animal where animal.weight > :start and animal.weight < :end")
     Iterable<Animal> findAnimalsByWeightIsBetween(@Param("start") double start, @Param("end") double end);
+
+    Iterable<Animal> findAnimalsByWeightIsBetweenAndAnimalClassAndValid(@Min(0) double weight, @Min(0) double weight2, AnimalClass animalClass, boolean valid);
 }

@@ -5,13 +5,14 @@ import br.com.leadfortaleza.code.model.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Arrays;
 
 @Entity
 @Table(name = "animals")
@@ -35,12 +36,13 @@ public class Animal {
     @Min(0)
     private double weight;
 
-    @Column(name = "image", unique = false, nullable = false, length = 100000)
-    private byte[] image;
+    @Column(columnDefinition = "LONGTEXT not null")
+    private String image;
+
 
     @Column
     @NotNull(message = "birthday date cannot be null")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
 
@@ -70,13 +72,17 @@ public class Animal {
                 ", name='" + name + '\'' +
                 ", breed='" + breed + '\'' +
                 ", weight=" + weight +
-                ", image='" + Arrays.toString(image) + '\'' +
+                 '\'' +
                 ", birthday=" + birthday +
                 ", vaccinated=" + vaccinated +
                 ", valid=" + valid +
                 ", gender=" + gender +
                 ", animalClass=" + animalClass +
                 '}';
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public void setInvalid(){

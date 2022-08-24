@@ -45,9 +45,40 @@ public class AnimalController {
         return this.animalRepository.findAnimalsByWeightIsBetween(start, end);
     }
 
+    @GetMapping(path = "/minWeight")
+    public @ResponseBody
+    Iterable<Animal> getAnimalByMinWeight(@RequestParam(name = "start") double start){
+        return this.animalRepository.findAnimalsByWeightIsBetween(start, Double.MAX_VALUE);
+    }
+
+    @GetMapping(path = "maxWeight")
+    public @ResponseBody
+    Iterable<Animal> getAnimalByMaxWeight(@RequestParam(name = "end") double end){
+        return this.animalRepository.findAnimalsByWeightIsBetween(Double.MIN_VALUE, end);
+    }
+
+    @GetMapping(path = "animalClass/weightInterval")
+    public @ResponseBody
+    Iterable<Animal> getAnimalByAnimalClassAndWeightInterval(@RequestParam(name = "animalClass") String animalClass, @RequestParam(name = "start") double start, @RequestParam(name = "end") double end){
+        return this.animalRepository.findAnimalsByWeightIsBetweenAndAnimalClassAndValid(start, end, AnimalClass.valueOf(animalClass.toUpperCase()), true);
+    }
+
+    @GetMapping(path = "animalClass/maxWeight")
+    public @ResponseBody
+    Iterable<Animal> getAnimalByAnimalClassAndMaxWeight(@RequestParam(name = "animalClass") String animalClass, @RequestParam(name = "end") double end){
+        return this.animalRepository.findAnimalsByWeightIsBetweenAndAnimalClassAndValid(Double.MIN_VALUE, end, AnimalClass.valueOf(animalClass.toUpperCase()), true);
+    }
+
+    @GetMapping(path = "animalClass/minWeight")
+    public @ResponseBody
+    Iterable<Animal> getAnimalByAnimalClassAndMinWeight(@RequestParam(name = "animalClass") String animalClass, @RequestParam(name = "start") double start){
+        return this.animalRepository.findAnimalsByWeightIsBetweenAndAnimalClassAndValid(start, Double.MAX_VALUE, AnimalClass.valueOf(animalClass.toUpperCase()), true);
+    }
+
     @PostMapping
     public @ResponseBody
     Animal post(@Valid @RequestBody Animal animal){
+        System.out.println(animal);
         return this.animalRepository.save(animal);
     }
 
@@ -61,5 +92,15 @@ public class AnimalController {
         }
 
         return animal;
+    }
+
+    @PutMapping(path = "/update")
+    public @ResponseBody
+    Optional<Animal> update(@RequestParam("animal") Animal animal){
+        Optional<Animal> animalActual = this.animalRepository.findById(animal.getId());
+        if (animalActual.isPresent()){
+            this.animalRepository.save(animal);
+        }
+        return animalActual;
     }
 }
