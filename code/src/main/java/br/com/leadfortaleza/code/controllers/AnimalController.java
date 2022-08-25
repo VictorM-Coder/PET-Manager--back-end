@@ -28,51 +28,52 @@ public class AnimalController {
         return this.animalRepository.findById(id);
     }
 
-    @GetMapping(path = "/animalClass/{animalClass}")
+    @GetMapping(path = "/search")
     public @ResponseBody
-    Iterable<Animal> getByAnimalClass(@PathVariable String animalClass){
-        try{
-            AnimalClass value = (AnimalClass.valueOf(animalClass.toUpperCase()));
-            return this.animalRepository.findAnimalsByAnimalClass(value);
-        }catch (IllegalArgumentException exception){
-            return null;
-        }
+    Iterable<Animal> get(@RequestParam(name = "name") String name){
+        return this.animalRepository.findAnimalsByNameContainsAndValidIsTrue(name);
+    }
+
+    @GetMapping(path = "/animalClass")
+    public @ResponseBody
+    Iterable<Animal> getByAnimalClass(@RequestParam(name = "name") String name, @RequestParam(name = "animalClass") String animalClass){
+        return this.animalRepository.findAnimalsByNameContainsAndAnimalClassAndValidIsTrue(name, AnimalClass.valueOf(animalClass));
     }
 
     @GetMapping(path = "/weightInterval")
     public @ResponseBody
-    Iterable<Animal> getAnimalsByWeightInterval(@RequestParam(name = "start") double start, @RequestParam(name = "end") double end){
-        return this.animalRepository.findAnimalsByWeightIsBetween(start, end);
+    Iterable<Animal> getAnimalsByWeightInterval(@RequestParam(name = "name") String name, @RequestParam(name = "start") double start, @RequestParam(name = "end") double end){
+        return this.animalRepository.findAnimalsByNameContainsAndWeightBetweenAndValidIsTrue(name, start, end);
     }
 
     @GetMapping(path = "/minWeight")
     public @ResponseBody
-    Iterable<Animal> getAnimalByMinWeight(@RequestParam(name = "start") double start){
-        return this.animalRepository.findAnimalsByWeightIsBetween(start, Double.MAX_VALUE);
+    Iterable<Animal> getAnimalByMinWeight(@RequestParam(name = "name") String name, @RequestParam(name = "start") double start){
+        return this.animalRepository.findAnimalsByNameContainsAndWeightBetweenAndValidIsTrue(name, start, Double.MAX_VALUE);
     }
 
     @GetMapping(path = "maxWeight")
     public @ResponseBody
-    Iterable<Animal> getAnimalByMaxWeight(@RequestParam(name = "end") double end){
-        return this.animalRepository.findAnimalsByWeightIsBetween(Double.MIN_VALUE, end);
+    Iterable<Animal> getAnimalByMaxWeight(@RequestParam(name = "name") String name, @RequestParam(name = "end") double end){
+        return this.animalRepository.findAnimalsByNameContainsAndWeightBetweenAndValidIsTrue(name, Double.MIN_VALUE, end);
     }
 
     @GetMapping(path = "animalClass/weightInterval")
     public @ResponseBody
-    Iterable<Animal> getAnimalByAnimalClassAndWeightInterval(@RequestParam(name = "animalClass") String animalClass, @RequestParam(name = "start") double start, @RequestParam(name = "end") double end){
-        return this.animalRepository.findAnimalsByWeightIsBetweenAndAnimalClassAndValid(start, end, AnimalClass.valueOf(animalClass.toUpperCase()), true);
+    Iterable<Animal> getAnimalByAnimalClassAndWeightInterval(@RequestParam(name = "name") String name, @RequestParam(name = "animalClass") String animalClass, @RequestParam(name = "start") double start, @RequestParam(name = "end") double end){
+        return this.animalRepository.findAnimalsByNameContainsAndWeightBetweenAndAnimalClassAndValidIsTrue(name, start, end, AnimalClass.valueOf(animalClass.toUpperCase()));
     }
 
     @GetMapping(path = "animalClass/maxWeight")
     public @ResponseBody
-    Iterable<Animal> getAnimalByAnimalClassAndMaxWeight(@RequestParam(name = "animalClass") String animalClass, @RequestParam(name = "end") double end){
-        return this.animalRepository.findAnimalsByWeightIsBetweenAndAnimalClassAndValid(Double.MIN_VALUE, end, AnimalClass.valueOf(animalClass.toUpperCase()), true);
+    Iterable<Animal> getAnimalByAnimalClassAndMaxWeight(@RequestParam(name = "name") String name, @RequestParam(name = "animalClass") String animalClass, @RequestParam(name = "end") double end){
+        return this.animalRepository.findAnimalsByNameContainsAndWeightBetweenAndAnimalClassAndValidIsTrue(name, Double.MIN_VALUE, end, AnimalClass.valueOf(animalClass.toUpperCase()));
     }
 
     @GetMapping(path = "animalClass/minWeight")
     public @ResponseBody
-    Iterable<Animal> getAnimalByAnimalClassAndMinWeight(@RequestParam(name = "animalClass") String animalClass, @RequestParam(name = "start") double start){
-        return this.animalRepository.findAnimalsByWeightIsBetweenAndAnimalClassAndValid(start, Double.MAX_VALUE, AnimalClass.valueOf(animalClass.toUpperCase()), true);
+    Iterable<Animal> getAnimalByAnimalClassAndMinWeight(@RequestParam(name = "name") String name, @RequestParam(name = "animalClass") String animalClass, @RequestParam(name = "start") double start){
+        return this.animalRepository.findAnimalsByNameContainsAndWeightBetweenAndAnimalClassAndValidIsTrue(name, start, Double.MAX_VALUE, AnimalClass.valueOf(animalClass.toUpperCase()));
     }
 
     @PostMapping
@@ -84,7 +85,6 @@ public class AnimalController {
     @PutMapping(path = "/delete/{id}")
     public @ResponseBody
     Optional<Animal> delete(@PathVariable Long id,@Valid @RequestBody Animal pet){
-
         Optional<Animal> animal = this.animalRepository.findById(id);
         if (animal.isPresent()){
             animal.get().setInvalid();
